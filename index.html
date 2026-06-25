@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#111827" />
+  <title>Solicitações Vigilância</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Stellantis • Vigilância Patrimonial</p>
+        <h1>Solicitações Vigilância</h1>
+      </div>
+      <button id="btnTrocarPerfil" class="ghost small">Trocar perfil</button>
+    </header>
+
+    <main>
+      <section id="telaPerfil" class="screen active">
+        <div class="hero card">
+          <div class="bot-avatar" aria-hidden="true">🤖</div>
+          <h2>Escolha o perfil de acesso</h2>
+          <p>Use “Solicitante” para abrir ou consultar chamados. Use “Vigilância” para acompanhar, receber e finalizar atendimentos.</p>
+
+          <div class="profile-grid">
+            <button class="profile-card" data-profile="solicitante">
+              <span>🙋</span>
+              <strong>Solicitante</strong>
+              <small>Abrir chamado e consultar status</small>
+            </button>
+
+            <button class="profile-card" data-profile="vigilancia">
+              <span>🛡️</span>
+              <strong>Vigilância</strong>
+              <small>Painel, filtros e alteração de status</small>
+            </button>
+          </div>
+
+          <div id="pinBox" class="pin-box hidden">
+            <label for="pinVigilancia">PIN da Vigilância</label>
+            <input id="pinVigilancia" type="password" inputmode="numeric" placeholder="Digite o PIN" />
+            <button id="btnEntrarVigilancia">Entrar</button>
+            <p class="hint">PIN padrão: 1234. Altere no arquivo <b>app.js</b>.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="telaInicio" class="screen">
+        <div class="hero card">
+          <div class="bot-avatar" aria-hidden="true">🤖</div>
+          <h2>Atendimento de solicitações</h2>
+          <p>Abra chamados com número único, acompanhe o status e mantenha o histórico do atendimento organizado.</p>
+
+          <div class="quick-actions">
+            <button data-go="nova">Nova solicitação</button>
+            <button data-go="bot" class="secondary">Abrir pelo Bot</button>
+            <button data-go="consultar" class="secondary">Consultar status</button>
+            <button data-go="painel" class="admin-only secondary">Painel da Vigilância</button>
+          </div>
+        </div>
+
+        <div class="grid cards-dashboard">
+          <article class="metric-card">
+            <span>Hoje</span>
+            <strong id="homeHoje">0</strong>
+            <small>chamados registrados</small>
+          </article>
+          <article class="metric-card">
+            <span>Abertos</span>
+            <strong id="homeAbertos">0</strong>
+            <small>aguardando atendimento</small>
+          </article>
+          <article class="metric-card">
+            <span>Em atendimento</span>
+            <strong id="homeAtendimento">0</strong>
+            <small>em andamento</small>
+          </article>
+        </div>
+      </section>
+
+      <section id="telaNova" class="screen">
+        <div class="section-title">
+          <h2>Nova solicitação</h2>
+          <p>Preencha os dados abaixo para gerar o chamado.</p>
+        </div>
+
+        <form id="formChamado" class="card form-card">
+          <div class="form-grid">
+            <label>
+              Solicitante
+              <input name="solicitante" required placeholder="Nome de quem está solicitando" />
+            </label>
+
+            <label>
+              Contato / Ramal
+              <input name="contato" placeholder="Ramal, telefone ou WhatsApp" />
+            </label>
+
+            <label>
+              Origem
+              <select name="origem" id="origem" required>
+                <option value="">Selecione</option>
+                <option value="Stellantis">Stellantis</option>
+                <option value="Terceiro">Terceiro</option>
+              </select>
+            </label>
+
+            <label class="field-stellantis hidden">
+              Diretoria
+              <select name="diretoria" id="diretoria">
+                <option value="">Selecione</option>
+                <option>Manufatura</option>
+                <option>Logística</option>
+                <option>Qualidade</option>
+                <option>Engenharia</option>
+                <option>Facilities</option>
+                <option>Segurança do Trabalho</option>
+                <option>Outra</option>
+              </select>
+            </label>
+
+            <label class="field-terceiro hidden">
+              Empresa
+              <input name="empresa" placeholder="Nome da empresa terceira" />
+            </label>
+
+            <label>
+              Setor / Área
+              <input name="setor" required placeholder="Ex.: G38, G15, Carregamento, Caixaria..." />
+            </label>
+
+            <label>
+              Possui coluna?
+              <select name="temColuna" id="temColuna" required>
+                <option value="">Selecione</option>
+                <option value="Não">Não</option>
+                <option value="Sim">Sim</option>
+              </select>
+            </label>
+
+            <label id="boxColuna" class="hidden">
+              Informe a coluna
+              <input name="coluna" placeholder="Ex.: C12" />
+            </label>
+
+            <label>
+              Possui sala?
+              <select name="temSala" id="temSala" required>
+                <option value="">Selecione</option>
+                <option value="Não">Não</option>
+                <option value="Sim">Sim</option>
+              </select>
+            </label>
+
+            <label id="boxSala" class="hidden">
+              Informe a sala
+              <input name="sala" placeholder="Ex.: Sala 204" />
+            </label>
+
+            <label>
+              Tipo de solicitação
+              <select name="tipo" id="tipo" required>
+                <option value="">Selecione</option>
+                <option value="Boletim de Ocorrência">Boletim de Ocorrência</option>
+                <option value="Conferência">Conferência</option>
+                <option value="Acompanhamento">Acompanhamento</option>
+              </select>
+            </label>
+
+            <label id="boxSubtipo" class="hidden">
+              Detalhe do tipo
+              <select name="subtipo" id="subtipo">
+                <option value="">Selecione</option>
+              </select>
+            </label>
+
+            <label id="boxOutro" class="hidden full">
+              Descreva o item “Outros”
+              <input name="outroDetalhe" placeholder="Descreva a solicitação" />
+            </label>
+
+            <label>
+              Prioridade
+              <select name="prioridade">
+                <option value="Normal">Normal</option>
+                <option value="Alta">Alta</option>
+                <option value="Urgente">Urgente</option>
+              </select>
+            </label>
+
+            <label>
+              Turno
+              <select name="turno">
+                <option value="">Não informado</option>
+                <option>1º turno</option>
+                <option>2º turno</option>
+                <option>3º turno</option>
+              </select>
+            </label>
+
+            <label class="full">
+              Observações
+              <textarea name="observacoes" rows="4" placeholder="Descreva detalhes importantes para a Vigilância"></textarea>
+            </label>
+          </div>
+
+          <div class="actions">
+            <button type="submit">Registrar chamado</button>
+            <button type="reset" class="secondary">Limpar campos</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="telaBot" class="screen">
+        <div class="section-title">
+          <h2>Bot de atendimento</h2>
+          <p>Responda passo a passo para gerar o chamado.</p>
+        </div>
+
+        <div class="chat-shell card">
+          <div id="chatMessages" class="chat-messages"></div>
+          <div id="chatOptions" class="chat-options"></div>
+          <div class="chat-input-row">
+            <input id="chatInput" placeholder="Digite aqui..." />
+            <button id="chatSend">Enviar</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="telaConsultar" class="screen">
+        <div class="section-title">
+          <h2>Consultar status</h2>
+          <p>Digite o número do chamado para acompanhar o atendimento.</p>
+        </div>
+
+        <div class="card consult-card">
+          <label>
+            Número do chamado
+            <input id="consultaId" placeholder="Ex.: VIG-20260624-0001" />
+          </label>
+          <button id="btnConsultar">Consultar</button>
+        </div>
+
+        <div id="resultadoConsulta" class="result-area"></div>
+      </section>
+
+      <section id="telaPainel" class="screen">
+        <div class="section-title">
+          <h2>Painel da Vigilância</h2>
+          <p>Controle de chamados, status, tempos e filtros.</p>
+        </div>
+
+        <div class="grid cards-dashboard">
+          <article class="metric-card">
+            <span>Abertos hoje</span>
+            <strong id="dashAbertosHoje">0</strong>
+            <small>aguardando recebimento</small>
+          </article>
+          <article class="metric-card">
+            <span>Em atendimento</span>
+            <strong id="dashEmAtendimento">0</strong>
+            <small>chamados ativos</small>
+          </article>
+          <article class="metric-card">
+            <span>Finalizados hoje</span>
+            <strong id="dashFinalizadosHoje">0</strong>
+            <small>concluídos</small>
+          </article>
+          <article class="metric-card">
+            <span>Tempo médio</span>
+            <strong id="dashTempoMedio">-</strong>
+            <small>dos finalizados</small>
+          </article>
+          <article class="metric-card">
+            <span>Atrasados</span>
+            <strong id="dashAtrasados">0</strong>
+            <small>acima do limite</small>
+          </article>
+          <article class="metric-card">
+            <span>Tipo mais solicitado</span>
+            <strong id="dashTipoTop">-</strong>
+            <small>base atual</small>
+          </article>
+        </div>
+
+        <div class="card filters">
+          <label>
+            Status
+            <select id="filtroStatus">
+              <option value="">Todos</option>
+              <option>Aberto</option>
+              <option>Recebido</option>
+              <option>Em atendimento</option>
+              <option>Aguardando solicitante</option>
+              <option>Finalizado</option>
+              <option>Cancelado</option>
+            </select>
+          </label>
+
+          <label>
+            Tipo
+            <select id="filtroTipo">
+              <option value="">Todos</option>
+              <option>Boletim de Ocorrência</option>
+              <option>Conferência</option>
+              <option>Acompanhamento</option>
+            </select>
+          </label>
+
+          <label>
+            Busca
+            <input id="filtroBusca" placeholder="ID, setor, solicitante..." />
+          </label>
+
+          <button id="btnAtualizarPainel">Atualizar</button>
+        </div>
+
+        <div id="listaChamados" class="ticket-list"></div>
+      </section>
+
+      <section id="telaConfig" class="screen">
+        <div class="section-title">
+          <h2>Configurações</h2>
+          <p>As configurações fixas ficam no início do arquivo <b>app.js</b>.</p>
+        </div>
+
+        <div class="card">
+          <h3>Campos preparados para relatório</h3>
+          <p>O app salva campos como abertura, recebimento, finalização, tempo total, status, tipo, origem, setor, diretoria, empresa e prioridade.</p>
+          <p>Esses dados podem ser usados depois em indicadores e relatórios, sem precisar alterar a lógica principal.</p>
+        </div>
+      </section>
+    </main>
+
+    <nav id="bottomNav" class="bottom-nav hidden">
+      <button data-go="inicio" class="active">Início</button>
+      <button data-go="nova">Novo</button>
+      <button data-go="bot">Bot</button>
+      <button data-go="consultar">Status</button>
+      <button data-go="painel" class="admin-only">Painel</button>
+    </nav>
+  </div>
+
+  <div id="modalChamado" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-box">
+      <h2>Chamado registrado</h2>
+      <p id="modalTexto"></p>
+      <div class="actions vertical">
+        <a id="modalWhatsapp" class="button-link" target="_blank" rel="noopener">Abrir WhatsApp</a>
+        <button id="modalFechar" class="secondary">Fechar</button>
+      </div>
+      <p class="hint">Esta janela não fecha sozinha, para evitar que o número do chamado desapareça antes de você copiar ou abrir o WhatsApp.</p>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
